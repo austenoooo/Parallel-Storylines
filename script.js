@@ -1,11 +1,13 @@
 const replicateProxy = "https://replicate-api-proxy.glitch.me";
 
 // the start of the story
-let story =
+let storyStart =
   "Beneath the twinkling stars, a lone wolf howled in the heart of the wilderness.";
+let story = "";
 
-const storyDiv = document.getElementById("story");
-storyDiv.innerHTML = story + "...";
+const storyStartDiv = document.getElementById("story-start");
+const storyInput = document.getElementById("story");
+storyStartDiv.innerHTML = storyStart + "...";
 
 const generateButton = document.getElementById("generate");
 const keywordsInput = document.getElementById("keywords");
@@ -15,7 +17,7 @@ generateButton.addEventListener("click", function (event) {
 });
 
 async function getGeneration() {
-  let prompt = "Keep writing the following story for two to five more sentences: " + story;
+  let prompt = "Keep writing the following story for one more sentence: " + storyStart + story;
   if (keywordsInput.value != ""){
     prompt += "Keywords of the new sentences: " + keywordsInput.value; 
   }
@@ -43,7 +45,8 @@ async function getGeneration() {
   const proxy_said = await generation_info.json();
 
   if (proxy_said.output.length == 0) {
-    imageDiv.innerHTML = "Something went wrong, try it again";
+    // imageDiv.innerHTML = "Something went wrong, try it again";
+    console.log("Something went wrong.");
   } else {
     let output = proxy_said.output.join("");
     let splitted = output.split(/\r?\n/);
@@ -55,14 +58,18 @@ async function getGeneration() {
       ext = output;
     }
 
-    if (story.substring(0,10) == ext.substring(0,10)){
+    if (storyStart.substring(0,10) == ext.substring(0,10)){
       story = ext;
     }
     else{
       story += ext;
     }
     
-    storyDiv.innerHTML = story + "...";
+    storyInput.value = story;
 
   }
 }
+
+storyInput.addEventListener("change", (event) => {
+  story = storyInput.value;
+});
