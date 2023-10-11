@@ -1,5 +1,21 @@
 const replicateProxy = "https://replicate-api-proxy.glitch.me";
 
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyC8asf4PLmnJfUAP_BgPjerZB5oC9p9fRw",
+  authDomain: "multi-story.firebaseapp.com",
+  databaseURL: "https://multi-story-default-rtdb.firebaseio.com",
+  projectId: "multi-story",
+  storageBucket: "multi-story.appspot.com",
+  messagingSenderId: "858447906529",
+  appId: "1:858447906529:web:202a876f5d0ca7198359a0",
+  measurementId: "G-7GLM2SV8NR"
+};
+
+let group = "story-1";
+let typeOfThing = "story-text";
+let db;
+
 // the start of the story
 let storyStart =
   "Beneath the twinkling stars, a lone wolf howled in the heart of the wilderness.";
@@ -66,10 +82,50 @@ async function getGeneration() {
     }
     
     storyInput.value = story;
+    addStoryToDB();
 
   }
 }
 
 storyInput.addEventListener("change", (event) => {
   story = storyInput.value;
+  addStoryToDB();
 });
+
+function addStoryToDB() {
+  let myData = {
+    story: story,
+  };
+  // add to database
+  let dbInfo = db.ref("group/" + group + "/" + typeOfThing + "/").push(myData);
+}
+
+
+function connectToFirebase() {
+  const app = firebase.initializeApp(firebaseConfig);
+  db = app.database();
+
+  var myRef = db.ref("group/" + group+ "/" + typeOfThing +"/");
+  myRef.on("child_added", (data) => {
+    console.log("add", data.key, data.val());
+    let key = data.key;
+    let value = data.val();
+    //update our local variable
+    console.log(value);
+    // story = value;
+    // storyInput.value = story;
+    //console.log(story);
+  });
+
+  //not used
+  myRef.on("child_changed", (data) => {
+    console.log("changed", data.key, data.val());
+  });
+
+  //not used
+  myRef.on("child_removed", (data) => {
+    console.log("removed", data.key);
+  });
+}
+
+connectToFirebase();
