@@ -13,17 +13,19 @@ const firebaseConfig = {
 };
 
 let currentStoryId = 1;
-let totalStory = 1;
+let totalStory;
 let currentGroup = "story-1";
 let text = "story-text";
 let db;
+
+
 
 function nextStory() {
   if (currentStoryId + 1 > totalStory){
     currentStoryId = 1;
   }
   else{
-    currentStoryId += 1;
+    currentStoryId = currentStoryId + 1;
   }
   currentGroup = "story-" + currentStoryId;
   storyIdText.innerText = "Story ID: " + currentStoryId;
@@ -36,7 +38,7 @@ function prevStory() {
     currentStoryId = totalStory;
   }
   else{
-    currentStoryId -= 1;
+    currentStoryId = currentStoryId - 1;
   }
   currentGroup = "story-" + currentStoryId;
   storyIdText.innerText = "Story ID: " + currentStoryId;
@@ -56,6 +58,10 @@ function addStory() {
   // push to database
   addStoryToDB();
 
+  // sync with database
+  getLatestData();
+
+  storyIdText.innerText = "Story ID: " + currentStoryId
   storyNumberText.innerText = "Total Story: " + totalStory;
 
 }
@@ -81,8 +87,6 @@ generateButton.addEventListener("click", function (event) {
 
 const storyIdText = document.getElementById("story-id");
 const storyNumberText = document.getElementById("total-story");
-storyIdText.innerText = "Story ID: " + currentStoryId;
-storyNumberText.innerText = "Total Story: " + totalStory;
 
 const newStoryButton = document.getElementById("new-story");
 newStoryButton.addEventListener("click", function (event) {
@@ -189,6 +193,9 @@ function connectToFirebase() {
   // myRef.on("child_removed", (data) => {
   //   console.log("removed", data.key);
   // });
+
+  storyIdText.innerText = "Story ID: " + currentStoryId;
+  
 }
 
 function getLatestData() {
@@ -196,7 +203,8 @@ function getLatestData() {
   myRef.on("child_added", (data) => {
     console.log("add", data.key, data.val());
     let value = data.val();
-    totalStory = Object.keys(data).length - 1;
+    totalStory = Object.keys(value).length;
+    storyNumberText.innerText = "Total Story: " + totalStory;
     //update our local variable
     let currentStory = value[currentGroup][text]["story"];
     story = currentStory;
