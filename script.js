@@ -23,7 +23,7 @@ let story = "";
 
 const storyStartDiv = document.getElementById("story-start");
 const storyInput = document.getElementById("story");
-storyStartDiv.innerHTML = storyStart + "...";
+// storyStartDiv.innerHTML = storyStart + "...";
 
 const generateButton = document.getElementById("generate");
 const keywordsInput = document.getElementById("keywords");
@@ -96,8 +96,14 @@ function addStoryToDB() {
   let myData = {
     story: story,
   };
-  // add to database
-  let dbInfo = db.ref("group/" + group + "/" + typeOfThing + "/").push(myData);
+  let dbInfo = db.ref("group/" + group + "/" + typeOfThing + "/").set(myData);
+
+}
+
+function addNewStory(){
+  // create a new story instance
+
+  // create a new instance in firebase
 }
 
 
@@ -112,8 +118,8 @@ function connectToFirebase() {
     let value = data.val();
     //update our local variable
     console.log(value);
-    // story = value;
-    // storyInput.value = story;
+    story = value;
+    storyInput.value = story;
     //console.log(story);
   });
 
