@@ -81,3 +81,54 @@ body{
   text-shadow: rgb(178, 0, 209) 0.5px 0 10px;
   cursor: pointer;
 }
+
+#new-story{
+  font-size: 1.3rem;
+  color: white;
+  opacity: 0.95;
+  text-shadow: white 0.5px 0 10px;
+  position: relative;
+  left: 20vw;
+}
+
+#new-story:hover{
+  text-shadow: rgb(178, 0, 209) 0.5px 0 10px;
+  cursor: pointer;
+}
+
+#next-story{
+  font-size: 1.3rem;
+  color: white;
+  opacity: 0.95;
+  text-shadow: white 0.5px 0 10px;
+  position: relative;
+  left: 20vw;
+}
+
+#next-story:hover{
+  text-shadow: rgb(178, 0, 209) 0.5px 0 10px;
+  cursor: pointer;
+}
+
+#prev-story{
+  font-size: 1.3rem;
+  color: white;
+  opacity: 0.95;
+  text-shadow: white 0.5px 0 10px;
+  position: relative;
+  left: 20vw;
+}
+
+#prev-story:hover{
+  text-shadow: rgb(178, 0, 209) 0.5px 0 10px;
+  cursor: pointer;
+}
+
+#story-id, #total-story{
+  font-size: 1.3rem;
+  color: white;
+  opacity: 0.95;
+  text-shadow: white 0.5px 0 10px;
+  position: relative;
+  left: 20vw;
+}

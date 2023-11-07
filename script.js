@@ -12,9 +12,55 @@ const firebaseConfig = {
   measurementId: "G-7GLM2SV8NR"
 };
 
-let group = "story-1";
-let typeOfThing = "story-text";
+let currentStoryId = 1;
+let totalStory = 1;
+let currentGroup = "story-1";
+let text = "story-text";
 let db;
+
+function nextStory() {
+  if (currentStoryId + 1 > totalStory){
+    currentStoryId = 1;
+  }
+  else{
+    currentStoryId += 1;
+  }
+  currentGroup = "story-" + currentStoryId;
+  storyIdText.innerText = "Story ID: " + currentStoryId;
+
+  getLatestData();
+}
+
+function prevStory() {
+  if (currentStoryId - 1 == 0){
+    currentStoryId = totalStory;
+  }
+  else{
+    currentStoryId -= 1;
+  }
+  currentGroup = "story-" + currentStoryId;
+  storyIdText.innerText = "Story ID: " + currentStoryId;
+
+  getLatestData();
+}
+
+function addStory() {
+  totalStory += 1;
+  currentStoryId = totalStory;
+  currentGroup = "story-" + currentStoryId;
+
+  // reset the story
+  story = "";
+  storyInput.value = story;
+
+  // push to database
+  addStoryToDB();
+
+  storyNumberText.innerText = "Total Story: " + totalStory;
+
+}
+
+
 
 // the start of the story
 let storyStart =
@@ -25,11 +71,32 @@ const storyStartDiv = document.getElementById("story-start");
 const storyInput = document.getElementById("story");
 // storyStartDiv.innerHTML = storyStart + "...";
 
+
 const generateButton = document.getElementById("generate");
 const keywordsInput = document.getElementById("keywords");
 generateButton.addEventListener("click", function (event) {
   getGeneration();
   console.log("try generate");
+});
+
+const storyIdText = document.getElementById("story-id");
+const storyNumberText = document.getElementById("total-story");
+storyIdText.innerText = "Story ID: " + currentStoryId;
+storyNumberText.innerText = "Total Story: " + totalStory;
+
+const newStoryButton = document.getElementById("new-story");
+newStoryButton.addEventListener("click", function (event) {
+  addStory();
+});
+
+const nextStoryButton = document.getElementById("next-story");
+nextStoryButton.addEventListener("click", function (event) {
+  nextStory();
+});
+
+const prevStoryButton = document.getElementById("prev-story");
+prevStoryButton.addEventListener("click", function (event) {
+  prevStory();
 });
 
 async function getGeneration() {
@@ -96,7 +163,7 @@ function addStoryToDB() {
   let myData = {
     story: story,
   };
-  let dbInfo = db.ref("group/" + group + "/" + typeOfThing + "/").set(myData);
+  let dbInfo = db.ref("group/" + currentGroup + "/" + text + "/").set(myData);
 
 }
 
@@ -111,26 +178,30 @@ function connectToFirebase() {
   const app = firebase.initializeApp(firebaseConfig);
   db = app.database();
 
-  var myRef = db.ref("group/" + group+ "/" + typeOfThing +"/");
+  getLatestData();
+
+  //not used
+  // myRef.on("child_changed", (data) => {
+  //   console.log("changed", data.key, data.val());
+  // });
+
+  // //not used
+  // myRef.on("child_removed", (data) => {
+  //   console.log("removed", data.key);
+  // });
+}
+
+function getLatestData() {
+  var myRef = db.ref("/");
   myRef.on("child_added", (data) => {
     console.log("add", data.key, data.val());
-    let key = data.key;
     let value = data.val();
+    totalStory = Object.keys(data).length - 1;
     //update our local variable
-    console.log(value);
-    story = value;
-    storyInput.value = story;
-    //console.log(story);
-  });
-
-  //not used
-  myRef.on("child_changed", (data) => {
-    console.log("changed", data.key, data.val());
-  });
-
-  //not used
-  myRef.on("child_removed", (data) => {
-    console.log("removed", data.key);
+    let currentStory = value[currentGroup][text]["story"];
+    story = currentStory;
+    storyInput.value = currentStory;
+    // console.log(currentStory);
   });
 }
 
