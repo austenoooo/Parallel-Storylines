@@ -26,8 +26,3 @@ function updateCorpusData() {
     // push the updated corpus to database
     let dbInfo = db.ref("group/corpus").set(corpus);
 }
-
-
-
-// create the 3D space for each of the word
-
