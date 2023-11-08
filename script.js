@@ -82,7 +82,7 @@ const generateButton = document.getElementById("generate");
 const keywordsInput = document.getElementById("keywords");
 generateButton.addEventListener("click", function (event) {
   getGeneration();
-  console.log("try generate");
+  console.log("generate");
 });
 
 const storyIdText = document.getElementById("story-id");
@@ -154,6 +154,7 @@ async function getGeneration() {
     
     storyInput.value = story;
     addStoryToDB();
+    updateCorpusData();
 
   }
 }
@@ -161,6 +162,7 @@ async function getGeneration() {
 storyInput.addEventListener("change", (event) => {
   story = storyInput.value;
   addStoryToDB();
+  updateCorpusData();
 });
 
 function addStoryToDB() {
@@ -183,6 +185,7 @@ function connectToFirebase() {
   db = app.database();
 
   getLatestData();
+  getCorpusData();
 
   //not used
   // myRef.on("child_changed", (data) => {
@@ -203,7 +206,7 @@ function getLatestData() {
   myRef.on("child_added", (data) => {
     console.log("add", data.key, data.val());
     let value = data.val();
-    totalStory = Object.keys(value).length;
+    totalStory = Object.keys(value).length - 1;
     storyNumberText.innerText = "Total Story: " + totalStory;
     //update our local variable
     let currentStory = value[currentGroup][text]["story"];
